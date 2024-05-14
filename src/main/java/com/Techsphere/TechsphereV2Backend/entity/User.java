@@ -28,7 +28,7 @@ public class User {
     private String password;
     @Column(nullable = false)
     private Boolean active;
-    private String gender;
+
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_roles",

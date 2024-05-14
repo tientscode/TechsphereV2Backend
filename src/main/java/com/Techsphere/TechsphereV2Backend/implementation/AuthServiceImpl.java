@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
         if (userRepository.existsByUsername(signUpDto.getUsername()) ||
                 userRepository.existsByEmail(signUpDto.getEmail())) {
 
-            throw new RuntimeException("Username or email already exists");
+            throw new RuntimeException("Username or email already exists !");
         }
 
         // Create new user entity
@@ -61,6 +61,7 @@ public class AuthServiceImpl implements AuthService {
         user.setName(signUpDto.getName());
         user.setUsername(signUpDto.getUsername());
         user.setEmail(signUpDto.getEmail());
+        user.setActive(true);
         user.setPassword(new BCryptPasswordEncoder().encode(signUpDto.getPassword()));
 
         Role defaultRole = roleRepository.findByName("ROLE_USER");

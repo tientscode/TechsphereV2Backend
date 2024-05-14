@@ -1,5 +1,6 @@
 package com.Techsphere.TechsphereV2Backend.Controller;
 
+import com.Techsphere.TechsphereV2Backend.Repository.UserRepository;
 import com.Techsphere.TechsphereV2Backend.Service.AuthService;
 import com.Techsphere.TechsphereV2Backend.entity.User;
 import com.Techsphere.TechsphereV2Backend.model.Response;
@@ -12,11 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/")
 public class TestController {
     @Autowired
     private AuthService authService;
+    @Autowired
+    private UserRepository userRepository;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin")
@@ -30,37 +35,20 @@ public class TestController {
         return ResponseEntity.ok("Hello User");
     }
 
-    @PreAuthorize("hasRole('OTHER')")
+    @PreAuthorize("hasRole('uni')")
     @GetMapping("/other")
     public ResponseEntity<String> helloOTHER(){
         return ResponseEntity.ok("Hello OTHER");
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/getUsernameOrEmailActive")
-    public ResponseEntity<Response<User>> getUsernameOrEmailActive(@RequestParam("usernameOrEmail") String usernameOrEmail) {
-        try {
-            User user = authService.getUsernameOrEmailActive(usernameOrEmail);
-            Response<User> response = new Response<>(user, "Get user registered successfully", HttpStatus.OK);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            Response<User> response = new Response<>(null, e.getMessage(), HttpStatus.BAD_REQUEST);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
-    }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/getUsernameOrEmail")
-    public ResponseEntity<Response<User>> getUsernameOrEmail(@RequestParam("usernameOrEmail") String usernameOrEmail) {
-        try {
-            User user = authService.getUserByUsernameOrEmail(usernameOrEmail);
-            Response<User> response = new Response<>(user, "Get user registered successfully", HttpStatus.OK);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            Response<User> response = new Response<>(null, e.getMessage(), HttpStatus.BAD_REQUEST);
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/admin/user")
+    public ResponseEntity<List<User>> getUsernameOrEmail() {
+            List<User> user = userRepository.findAll();
+            return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
 
